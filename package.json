@@ -1,0 +1,28 @@
+{
+  "name": "dutchauction-project-v2",
+  "version": "1.0.0",
+  "description": "Dutch Auction project v2",
+  "main": "index.js",
+  "scripts": {
+    "test": "Dutch Auction"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/felix-adigbli/DutchAuction-Project-V2.git"
+  },
+  "keywords": [
+    "DuctchAuction",
+    "solidity"
+  ],
+  "author": "Felix Adigbli",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/felix-adigbli/DutchAuction-Project-V2/issues"
+  },
+  "homepage": "https://github.com/felix-adigbli/DutchAuction-Project-V2#readme",
+  "devDependencies": {
+    "@nomicfoundation/hardhat-toolbox": "^2.0.2",
+    "@statespace/hardhat-testgen": "^0.1.1",
+    "hardhat": "^2.14.1"
+  }
+}
