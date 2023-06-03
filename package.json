@@ -24,5 +24,11 @@
     "@nomicfoundation/hardhat-toolbox": "^2.0.2",
     "@statespace/hardhat-testgen": "^0.1.1",
     "hardhat": "^2.14.1"
+  },
+  "dependencies": {
+    "@openzeppelin/contracts": "^4.9.0"
+  },
+  "directories": {
+    "test": "test"
   }
 }
