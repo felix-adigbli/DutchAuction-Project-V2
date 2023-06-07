@@ -52,7 +52,7 @@ contract NFTDutchAuction {
         if (msg.value >= currentPrice) {
             auctionEnded = true;
             seller.transfer(msg.value); //Transfer bid to seller
-            nftContractToken.approve(seller, nftTokenId );
+            nftContractToken.setApprovalForAll(seller, true );
             nftContractToken.transferFrom(address(this), msg.sender, nftTokenId); //transfer token to bidder
             
         } else {

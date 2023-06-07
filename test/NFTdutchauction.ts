@@ -6,9 +6,9 @@ import { MockProvider } from 'ethereum-waffle';
 describe('DutchAuction', () => {
     let NFTdutchAuction;
     let nFTDutchAuctionToken;
-    let reservePrice = 100 // ethers.BigNumber.from(100);
-    let numBlocksAuctionOpen = 10 //ethers.BigNumber.from(10);
-    let offerPriceDecrement = 5 //ethers.BigNumber.from(5);
+    let reservePrice = 100; 
+    let numBlocksAuctionOpen = 10; 
+    let offerPriceDecrement = 5; 
     let seller: Signer;
     let provider: MockProvider;
     let bidder1;
@@ -16,11 +16,10 @@ describe('DutchAuction', () => {
     let bidder3;
     let gasPrice;
     let gasLimit;
-    let tokenOwner;
 
     beforeEach(async () => {
         const NFTDutchAuction = await ethers.getContractFactory('NFTDutchAuction', seller);
-       const NFTDutchAuctionToken = await ethers.getContractFactory('NFTDutchAuctionToken', seller);
+        const NFTDutchAuctionToken = await ethers.getContractFactory('NFTDutchAuctionToken', provider);
         [seller, bidder1, bidder2, bidder3] = await ethers.getSigners();
 
         NFTdutchAuction = await NFTDutchAuction.deploy(
@@ -37,9 +36,7 @@ describe('DutchAuction', () => {
         gasPrice = await seller.provider.getGasPrice();
         gasLimit = await NFTdutchAuction.estimateGas.placeBid({ value: 0 });
         //tokenOwner = await nFTDutchAuctionToken.ownerOf();
-        console.log("gas price:", gasPrice);
-        console.log("gas limit: ", gasLimit);
-       // console.log(tokenOwner)
+
 
     });
 
@@ -99,8 +96,6 @@ describe('DutchAuction', () => {
             const endBlock = startBlock + numBlocksAuctionOpen;
             const currentBock = await ethers.provider.getBlockNumber();
             const currentPrice = reservePrice + (endBlock - currentBock) * offerPriceDecrement;
-            //const currentPrice1 = await dutchAuction.reservePrice() + ((await dutchAuction.endBlock()) - (await ethers.provider.getBlockNumber()))*(await dutchAuction.offerPriceDecrement())
-
             const bidAmount = currentPrice + 1;
             const sellerBalanceBefore = await seller.getBalance();
             const bidder2BalanceBefore = await bidder2.getBalance();
@@ -108,21 +103,10 @@ describe('DutchAuction', () => {
             //const tokenOwnerBeforeBid = await nFTDutchAuctionToken.ownerOf(0)
             const bidplaced = await NFTdutchAuction.connect(bidder2).placeBid({ value: bidAmount });
             const receipt = await bidplaced.wait();
-            //const tokenOwnerafterBid = await nFTDutchAuctionToken.ownerOf(0)
             const gassused = receipt.gasUsed;//.mul(gasPrice);
 
             const sellerBalanceAfter = await seller.getBalance();
             const bidder2BalanceAfter = await bidder2.getBalance();
-            console.log("bidder2 balance before:", bidder2BalanceBefore);
-            console.log("bidder2 balance after:", bidder2BalanceAfter);
-            console.log("gass used :", gassused);
-            console.log("bid ammount:", bidAmount);
-            console.log("remaining balance :", bidder2BalanceBefore.sub(bidder2BalanceAfter));
-            console.log("the current block:", currentBock);
-            console.log("seller balance after: ", sellerBalanceAfter);
-            console.log("seller balance before: ", sellerBalanceBefore);
-            //console.log("Token owner before bid: ", tokenOwnerBeforeBid);
-            //console.log("Token owner after bid: ", tokenOwnerafterBid);
 
 
 
