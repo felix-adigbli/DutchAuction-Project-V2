@@ -1,9 +1,13 @@
-// SPDX-License-Identifier: UNLICENSED
+// SPDX-License-Identifier: MIT
 pragma solidity ^0.8.9;
 
-import "@openzeppelin/contracts/token/ERC721/presets/ERC721PresetMinterPauserAutoId.sol";
+import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
 
-contract NFTDutchAuctionToken is ERC721PresetMinterPauserAutoId {
-    constructor() ERC721PresetMinterPauserAutoId("NFTDutchAuctionToken", "DUT", "https://northeastern.edu/NFTdutchauction") {}
+contract NFTDutchAuctionToken is ERC721, Ownable {
+    constructor() ERC721("NFTDutchAuctionToken", "DUT") {}
 
+    function safeMint(address to, uint256 tokenId) public onlyOwner {
+        _safeMint(to, tokenId);
+    }
 }

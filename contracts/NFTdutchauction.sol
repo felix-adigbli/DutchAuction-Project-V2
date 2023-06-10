@@ -1,18 +1,27 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.9;
 import "./NFTdutchauctiontoken.sol";
+/**interface IERC721Token {
+    function safeMint(address to, uint256 nftTokenId) external;
+    function ownerOf(uint256 nftTokenId) external view  returns (uint256);
+    function approve(address to, uint256 nftTokenId) external;
+    function safeTransferFrom(address from, address to, uint256 nftTokenId) external;
+
+    }*/
 
 contract NFTDutchAuction {
     NFTDutchAuctionToken public nftContractToken;
     address payable public seller;
-    //address erc721TokenAddress;
+    address public ownerOfToken;
+    address public erc721TokenAddress;
     uint256 public reservePrice;
     uint256 public numBlocksAuctionOpen;
     uint256 public offerPriceDecrement;
     uint256 public startBlock;
     uint256 public endBlock;
     uint256 public currentPrice;    
-    uint256 nftTokenId;
+    uint256 public nftTokenId;
+
 
     bool public auctionEnded;
 
@@ -21,9 +30,9 @@ contract NFTDutchAuction {
     constructor(
         uint256 _reservePrice,
         uint256 _numBlocksAuctionOpen,
-        uint256 _offerPriceDecrement
-        //uint256 _nftTokenId
-        //address _erc721TokenAddress
+        uint256 _offerPriceDecrement,
+        uint256 _nftTokenId,
+        address _erc721TokenAddress
 
 
     ) {
@@ -31,29 +40,26 @@ contract NFTDutchAuction {
         reservePrice = _reservePrice;
         numBlocksAuctionOpen = _numBlocksAuctionOpen;
         offerPriceDecrement = _offerPriceDecrement;
+        nftTokenId = _nftTokenId;
+        erc721TokenAddress = _erc721TokenAddress;
         startBlock = block.number;
         endBlock = startBlock + numBlocksAuctionOpen;
-        auctionEnded = false;
-        nftTokenId = 0;
-        // Mint a token to the address that deployed this contract
-        nftContractToken = new NFTDutchAuctionToken();
-        nftContractToken.mint(address(this));
+        ownerOfToken = IERC721(_erc721TokenAddress).ownerOf(_nftTokenId);
         
+        auctionEnded = false;     
+        //check if the the deployer is the owner of the token.
+     require(seller == ownerOfToken, "Sender is not the owner of token" );       
+
 
     }
 
-    //function for bidders to place bid and proccess the bid
     function placeBid() external payable {
             require(!auctionEnded, "Auction has ended");
-        currentPrice =
-            reservePrice +
-            (endBlock - block.number) *
-            offerPriceDecrement; //get current price
+        currentPrice = currentPrice = reservePrice + (endBlock - block.number) *  offerPriceDecrement; //get current price
         if (msg.value >= currentPrice) {
             auctionEnded = true;
             seller.transfer(msg.value); //Transfer bid to seller
-            nftContractToken.setApprovalForAll(seller, true );
-            nftContractToken.transferFrom(address(this), msg.sender, nftTokenId); //transfer token to bidder
+           IERC721(erc721TokenAddress).safeTransferFrom(seller, msg.sender, nftTokenId);
             
         } else {
             payable(msg.sender).transfer(msg.value); //Transfer bid to sender
